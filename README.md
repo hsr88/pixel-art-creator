@@ -36,11 +36,12 @@ A modern, feature-rich pixel art editor built with vanilla JavaScript, HTML, and
 
 ## 🚀 Demo
 
-[Live Demo](https://hsr88.github.io/pixel-art-creator) *(Update this link after deploying)*
+[Live Demo](https://hsr88.github.io/pixel-art-creator/)
 
 ## 📸 Screenshots
 
-*Add screenshots of your application here*
+<img width="812" height="971" alt="Zrzut ekranu 2025-11-29 234039" src="https://github.com/user-attachments/assets/6fc3caa9-7b9a-4204-80ea-afc3064854b2" />
+
 
 ## 🛠️ Installation
 
