@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Art Creator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Silkscreen&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
+
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            background-attachment: fixed;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(255,255,255,.1) 4px, rgba(255,255,255,.1) 8px),
+                repeating-linear-gradient(90deg, transparent, transparent 4px, rgba(255,255,255,.1) 4px, rgba(255,255,255,.1) 8px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border: 4px solid #6366f1;
+            box-shadow: 
+                0 0 0 2px #a5b4fc,
+                12px 12px 0 0 rgba(67, 56, 202, 0.8),
+                0 0 60px rgba(99, 102, 241, 0.4);
+            padding: 25px;
+            max-width: 95%;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            text-align: center;
+            background: linear-gradient(45deg, #6366f1, #8b5cf6, #ec4899, #f59e0b);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientText 3s ease infinite;
+            margin-bottom: 8px;
+            font-size: 1.5em;
+            text-shadow: none;
+            letter-spacing: 2px;
+            filter: drop-shadow(3px 3px 0px rgba(99, 102, 241, 0.3));
+        }
+
+        @keyframes gradientText {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #8b5cf6;
+            margin-bottom: 25px;
+            font-size: 0.5em;
+            letter-spacing: 1px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #faf5ff 50%, #fef3c7 100%);
+            border: 3px solid #6366f1;
+            position: relative;
+        }
+
+        .controls::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(99,102,241,.05) 3px, rgba(99,102,241,.05) 6px),
+                repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(139,92,246,.05) 3px, rgba(139,92,246,.05) 6px);
+            pointer-events: none;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-group label {
+            font-size: 0.5em;
+            color: #6366f1;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        select, input[type="color"], input[type="text"], input[type="number"] {
+            padding: 8px 12px;
+            border: 3px solid #6366f1;
+            background: #ffffff;
+            color: #4338ca;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.5em;
+            cursor: pointer;
+            box-shadow: 4px 4px 0 0 #c7d2fe;
+        }
+
+        select:hover, input[type="color"]:hover, input[type="text"]:hover, input[type="number"]:hover {
+            border-color: #8b5cf6;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 0 #c7d2fe;
+        }
+
+        select:active, input[type="color"]:active, input[type="text"]:active, input[type="number"]:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 0 #c7d2fe;
+        }
+
+        input[type="color"] {
+            width: 70px;
+            height: 45px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        input[type="text"] {
+            min-width: 150px;
+        }
+
+        input[type="number"] {
+            width: 80px;
+        }
+
+        .tools {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tool-btn {
+            padding: 10px 15px;
+            background: #ffffff;
+            border: 3px solid #6366f1;
+            color: #6366f1;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.5em;
+            box-shadow: 4px 4px 0 0 #c7d2fe;
+            transition: all 0.1s;
+        }
+
+        .tool-btn:hover {
+            border-color: #8b5cf6;
+            color: #8b5cf6;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 0 #c7d2fe;
+        }
+
+        .tool-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 0 #c7d2fe;
+        }
+
+        .tool-btn.active {
+            background: #6366f1;
+            color: #fff;
+            border-color: #6366f1;
+        }
+
+        .action-btn {
+            padding: 10px 18px;
+            background: #6366f1;
+            color: #fff;
+            border: 3px solid #4338ca;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.5em;
+            box-shadow: 4px 4px 0 0 #c7d2fe;
+            transition: all 0.1s;
+        }
+
+        .action-btn:hover {
+            background: #8b5cf6;
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 0 #c7d2fe;
+        }
+
+        .action-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0 0 #c7d2fe;
+        }
+
+        .action-btn.danger {
+            background: #ef4444;
+            border-color: #dc2626;
+        }
+
+        .action-btn.danger:hover {
+            background: #f87171;
+        }
+
+        .canvas-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #ddd6fe 0%, #fbcfe8 50%, #fde68a 100%);
+            border: 3px solid #6366f1;
+            overflow: auto;
+            position: relative;
+        }
+
+        .canvas-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,.2) 10px, rgba(255,255,255,.2) 20px);
+            pointer-events: none;
+        }
+
+        #pixelCanvas {
+            border: 4px solid #6366f1;
+            cursor: crosshair;
+            background: #fff;
+            box-shadow: 
+                0 0 0 2px #a5b4fc,
+                8px 8px 0 0 #4338ca;
+            display: block;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .color-swatch {
+            width: 35px;
+            height: 35px;
+            border: 3px solid #6366f1;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 0 #c7d2fe;
+            transition: all 0.1s;
+        }
+
+        .color-swatch:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 0 #c7d2fe;
+            border-color: #8b5cf6;
+        }
+
+        .color-swatch:active {
+            transform: translate(1px, 1px);
+            box-shadow: 2px 2px 0 0 #c7d2fe;
+        }
+
+        .color-swatch.active {
+            border: 3px solid #8b5cf6;
+            box-shadow: 
+                0 0 0 2px #6366f1,
+                5px 5px 0 2px #c7d2fe;
+        }
+
+        .info {
+            text-align: center;
+            color: #4338ca;
+            font-size: 0.45em;
+            margin-top: 15px;
+            padding: 12px;
+            background: linear-gradient(135deg, #e0e7ff 0%, #fae8ff 100%);
+            border: 3px solid #6366f1;
+            line-height: 1.6;
+        }
+
+        /* Pixel icons using CSS */
+        .tool-btn::before {
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .tool-btn[data-tool="draw"]::before {
+            content: "▓";
+        }
+
+        .tool-btn[data-tool="erase"]::before {
+            content: "░";
+        }
+
+        .tool-btn[data-tool="fill"]::before {
+            content: "▒";
+        }
+
+        .tool-btn[data-tool="line"]::before {
+            content: "─";
+        }
+
+        .tool-btn[data-tool="rectangle"]::before {
+            content: "□";
+        }
+
+        .tool-btn[data-tool="circle"]::before {
+            content: "○";
+        }
+
+        .action-btn:nth-child(1)::before {
+            content: "↓ ";
+        }
+
+        .action-btn:nth-child(2)::before {
+            content: "☆ ";
+        }
+
+        .action-btn.danger::before {
+            content: "✕ ";
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1em;
+            }
+
+            .subtitle {
+                font-size: 0.4em;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .tool-btn, .action-btn, select {
+                font-size: 0.45em;
+            }
+
+            .control-group label {
+                font-size: 0.45em;
+            }
+
+            .info {
+                font-size: 0.4em;
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: linear-gradient(135deg, #e0e7ff 0%, #fae8ff 100%);
+            border: 2px solid #6366f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border: 2px solid #a5b4fc;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>PIXEL ART</h1>
+        <p class="subtitle">~ CREATE RETRO GRAPHICS ~</p>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>GRID SIZE</label>
+                <select id="gridSize">
+                    <option value="16">16 x 16</option>
+                    <option value="32" selected>32 x 32</option>
+                    <option value="48">48 x 48</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>PIXEL SIZE</label>
+                <select id="pixelSize">
+                    <option value="6">TINY (6px)</option>
+                    <option value="8">SMALL (8px)</option>
+                    <option value="10" selected>MEDIUM (10px)</option>
+                    <option value="12">LARGE (12px)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>COLOR</label>
+                <input type="color" id="colorPicker" value="#667eea">
+            </div>
+
+            <div class="control-group">
+                <label>TOOLS</label>
+                <div class="tools">
+                    <button class="tool-btn active" data-tool="draw">DRAW</button>
+                    <button class="tool-btn" data-tool="erase">ERASE</button>
+                    <button class="tool-btn" data-tool="fill">FILL</button>
+                    <button class="tool-btn" data-tool="line">LINE</button>
+                    <button class="tool-btn" data-tool="rectangle">RECT</button>
+                    <button class="tool-btn" data-tool="circle">CIRCLE</button>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group" style="flex: 1;">
+                <label>COLOR PALETTE</label>
+                <div class="color-palette" id="colorPalette"></div>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="pixelCanvas"></canvas>
+        </div>
+
+        <div class="controls">
+            <button class="action-btn" onclick="downloadImage()">SAVE PNG</button>
+            <button class="action-btn" onclick="saveToGallery()">GALLERY</button>
+            <button class="action-btn danger" onclick="clearCanvas()">CLEAR</button>
+        </div>
+
+        <div class="info">
+            [!] CLICK AND DRAG TO DRAW FASTER<br>RIGHT CLICK = ERASER
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('pixelCanvas');
+        const ctx = canvas.getContext('2d');
+        const colorPicker = document.getElementById('colorPicker');
+        const gridSizeSelect = document.getElementById('gridSize');
+        const pixelSizeSelect = document.getElementById('pixelSize');
+        
+        let currentColor = '#667eea';
+        let currentTool = 'draw';
+        let isDrawing = false;
+        let gridSize = 32;
+        let pixelSize = 10;
+        let grid = [];
+        let startX, startY;
+        let tempGrid = [];
+        let isShapeMode = false;
+
+        // Predefiniowana paleta kolorów
+        const colorPalette = [
+            '#000000', '#FFFFFF', '#808080', '#C0C0C0',
+            '#FF0000', '#00FF00', '#0000FF', '#FFFF00',
+            '#FF00FF', '#00FFFF', '#800000', '#008000',
+            '#000080', '#808000', '#800080', '#008080',
+            '#FFA500', '#FFC0CB', '#A52A2A', '#DEB887',
+            '#667eea', '#764ba2', '#f093fb', '#4facfe'
+        ];
+
+        function initCanvas() {
+            gridSize = parseInt(gridSizeSelect.value);
+            pixelSize = parseInt(pixelSizeSelect.value);
+            canvas.width = gridSize * pixelSize;
+            canvas.height = gridSize * pixelSize;
+            
+            // Initialize grid with white
+            grid = Array(gridSize).fill().map(() => Array(gridSize).fill('#FFFFFF'));
+            drawGrid();
+        }
+
+        function drawGrid() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            for (let y = 0; y < gridSize; y++) {
+                for (let x = 0; x < gridSize; x++) {
+                    ctx.fillStyle = grid[y][x];
+                    ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+                    
+                    // Grid lines
+                    ctx.strokeStyle = '#f0f0f0';
+                    ctx.lineWidth = 0.5;
+                    ctx.strokeRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+                }
+            }
+        }
+
+        function getPixelCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = Math.floor((e.clientX - rect.left) / pixelSize);
+            const y = Math.floor((e.clientY - rect.top) / pixelSize);
+            return { x, y };
+        }
+
+        function drawPixel(x, y, color) {
+            if (x >= 0 && x < gridSize && y >= 0 && y < gridSize) {
+                grid[y][x] = color;
+                ctx.fillStyle = color;
+                ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+                ctx.strokeStyle = '#f0f0f0';
+                ctx.lineWidth = 0.5;
+                ctx.strokeRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+            }
+        }
+
+        // Bresenham's line algorithm
+        function drawLine(x0, y0, x1, y1, color) {
+            const dx = Math.abs(x1 - x0);
+            const dy = Math.abs(y1 - y0);
+            const sx = x0 < x1 ? 1 : -1;
+            const sy = y0 < y1 ? 1 : -1;
+            let err = dx - dy;
+
+            while (true) {
+                drawPixel(x0, y0, color);
+
+                if (x0 === x1 && y0 === y1) break;
+                const e2 = 2 * err;
+                if (e2 > -dy) {
+                    err -= dy;
+                    x0 += sx;
+                }
+                if (e2 < dx) {
+                    err += dx;
+                    y0 += sy;
+                }
+            }
+        }
+
+        function drawRectangle(x0, y0, x1, y1, color) {
+            const minX = Math.min(x0, x1);
+            const maxX = Math.max(x0, x1);
+            const minY = Math.min(y0, y1);
+            const maxY = Math.max(y0, y1);
+
+            // Draw outline only
+            for (let x = minX; x <= maxX; x++) {
+                drawPixel(x, minY, color); // Top edge
+                drawPixel(x, maxY, color); // Bottom edge
+            }
+            for (let y = minY; y <= maxY; y++) {
+                drawPixel(minX, y, color); // Left edge
+                drawPixel(maxX, y, color); // Right edge
+            }
+        }
+
+        function drawCircle(cx, cy, x1, y1, color) {
+            const radius = Math.round(Math.sqrt(Math.pow(x1 - cx, 2) + Math.pow(y1 - cy, 2)));
+            
+            // Midpoint circle algorithm
+            let x = radius;
+            let y = 0;
+            let err = 0;
+
+            while (x >= y) {
+                drawPixel(cx + x, cy + y, color);
+                drawPixel(cx + y, cy + x, color);
+                drawPixel(cx - y, cy + x, color);
+                drawPixel(cx - x, cy + y, color);
+                drawPixel(cx - x, cy - y, color);
+                drawPixel(cx - y, cy - x, color);
+                drawPixel(cx + y, cy - x, color);
+                drawPixel(cx + x, cy - y, color);
+
+                if (err <= 0) {
+                    y += 1;
+                    err += 2 * y + 1;
+                }
+                if (err > 0) {
+                    x -= 1;
+                    err -= 2 * x + 1;
+                }
+            }
+        }
+
+        function floodFill(startX, startY, targetColor, fillColor) {
+            if (targetColor === fillColor) return;
+            
+            const stack = [[startX, startY]];
+            
+            while (stack.length > 0) {
+                const [x, y] = stack.pop();
+                
+                if (x < 0 || x >= gridSize || y < 0 || y >= gridSize) continue;
+                if (grid[y][x] !== targetColor) continue;
+                
+                grid[y][x] = fillColor;
+                
+                stack.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+            }
+            
+            drawGrid();
+        }
+
+        function handleCanvasInteraction(e) {
+            const { x, y } = getPixelCoords(e);
+            
+            if (currentTool === 'draw') {
+                drawPixel(x, y, currentColor);
+            } else if (currentTool === 'erase') {
+                drawPixel(x, y, '#FFFFFF');
+            } else if (currentTool === 'fill' && e.type === 'mousedown') {
+                const targetColor = grid[y][x];
+                floodFill(x, y, targetColor, currentColor);
+            }
+        }
+
+        function saveTemporaryGrid() {
+            tempGrid = grid.map(row => [...row]);
+        }
+
+        function restoreTemporaryGrid() {
+            grid = tempGrid.map(row => [...row]);
+            drawGrid();
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            const { x, y } = getPixelCoords(e);
+            isDrawing = true;
+            
+            if (currentTool === 'line' || currentTool === 'rectangle' || currentTool === 'circle') {
+                isShapeMode = true;
+                startX = x;
+                startY = y;
+                saveTemporaryGrid();
+            } else {
+                handleCanvasInteraction(e);
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDrawing) return;
+            
+            const { x, y } = getPixelCoords(e);
+            
+            if (isShapeMode) {
+                restoreTemporaryGrid();
+                
+                if (currentTool === 'line') {
+                    drawLine(startX, startY, x, y, currentColor);
+                } else if (currentTool === 'rectangle') {
+                    drawRectangle(startX, startY, x, y, currentColor);
+                } else if (currentTool === 'circle') {
+                    drawCircle(startX, startY, x, y, currentColor);
+                }
+            } else if (currentTool !== 'fill') {
+                handleCanvasInteraction(e);
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDrawing = false;
+            isShapeMode = false;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            isDrawing = false;
+            isShapeMode = false;
+        });
+
+        // Right click as eraser
+        canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            const { x, y } = getPixelCoords(e);
+            drawPixel(x, y, '#FFFFFF');
+        });
+
+        // Color picker
+        colorPicker.addEventListener('input', (e) => {
+            currentColor = e.target.value;
+            updateActiveColor();
+        });
+
+        // Tool buttons
+        document.querySelectorAll('.tool-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTool = btn.dataset.tool;
+            });
+        });
+
+        // Grid size change
+        gridSizeSelect.addEventListener('change', initCanvas);
+        pixelSizeSelect.addEventListener('change', initCanvas);
+
+        // Create color palette
+        function createColorPalette() {
+            const paletteDiv = document.getElementById('colorPalette');
+            colorPalette.forEach(color => {
+                const swatch = document.createElement('div');
+                swatch.className = 'color-swatch';
+                swatch.style.backgroundColor = color;
+                swatch.addEventListener('click', () => {
+                    currentColor = color;
+                    colorPicker.value = color;
+                    updateActiveColor();
+                });
+                paletteDiv.appendChild(swatch);
+            });
+        }
+
+        function updateActiveColor() {
+            document.querySelectorAll('.color-swatch').forEach(swatch => {
+                if (swatch.style.backgroundColor === currentColor || 
+                    rgbToHex(swatch.style.backgroundColor) === currentColor) {
+                    swatch.classList.add('active');
+                } else {
+                    swatch.classList.remove('active');
+                }
+            });
+        }
+
+        function rgbToHex(rgb) {
+            const result = rgb.match(/\d+/g);
+            if (!result) return rgb;
+            return '#' + result.map(x => {
+                const hex = parseInt(x).toString(16);
+                return hex.length === 1 ? '0' + hex : hex;
+            }).join('');
+        }
+
+        function clearCanvas() {
+            if (confirm('CLEAR ENTIRE CANVAS?')) {
+                grid = Array(gridSize).fill().map(() => Array(gridSize).fill('#FFFFFF'));
+                drawGrid();
+            }
+        }
+
+        function downloadImage() {
+            // Create a temporary canvas without grid lines
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = gridSize * pixelSize;
+            tempCanvas.height = gridSize * pixelSize;
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            for (let y = 0; y < gridSize; y++) {
+                for (let x = 0; x < gridSize; x++) {
+                    tempCtx.fillStyle = grid[y][x];
+                    tempCtx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+                }
+            }
+            
+            const link = document.createElement('a');
+            link.download = `pixel-art-${Date.now()}.png`;
+            link.href = tempCanvas.toDataURL();
+            link.click();
+        }
+
+        function saveToGallery() {
+            const artwork = {
+                grid: grid,
+                gridSize: gridSize,
+                timestamp: Date.now()
+            };
+            
+            let gallery = JSON.parse(localStorage.getItem('pixelArtGallery') || '[]');
+            gallery.push(artwork);
+            localStorage.setItem('pixelArtGallery', JSON.stringify(gallery));
+            
+            alert('[OK] SAVED TO GALLERY!');
+        }
+
+        // Initialize
+        createColorPalette();
+        initCanvas();
+        updateActiveColor();
+    </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Art Creator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>PIXEL ART</h1>
+        <p class="subtitle">~ CREATE RETRO GRAPHICS ~</p>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>GRID SIZE</label>
+                <select id="gridSize">
+                    <option value="16">16 x 16</option>
+                    <option value="32" selected>32 x 32</option>
+                    <option value="48">48 x 48</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>PIXEL SIZE</label>
+                <select id="pixelSize">
+                    <option value="6">TINY (6px)</option>
+                    <option value="8">SMALL (8px)</option>
+                    <option value="10" selected>MEDIUM (10px)</option>
+                    <option value="12">LARGE (12px)</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>COLOR</label>
+                <input type="color" id="colorPicker" value="#667eea">
+            </div>
+
+            <div class="control-group">
+                <label>TOOLS</label>
+                <div class="tools">
+                    <button class="tool-btn active" data-tool="draw">DRAW</button>
+                    <button class="tool-btn" data-tool="erase">ERASE</button>
+                    <button class="tool-btn" data-tool="fill">FILL</button>
+                    <button class="tool-btn" data-tool="line">LINE</button>
+                    <button class="tool-btn" data-tool="rectangle">RECT</button>
+                    <button class="tool-btn" data-tool="circle">CIRCLE</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="control-group" style="flex: 1;">
+                <label>COLOR PALETTE</label>
+                <div class="color-palette" id="colorPalette"></div>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="pixelCanvas"></canvas>
+        </div>
+
+        <div class="controls">
+            <button class="action-btn" onclick="downloadImage()">SAVE PNG</button>
+            <button class="action-btn" onclick="saveToGallery()">GALLERY</button>
+            <button class="action-btn danger" onclick="clearCanvas()">CLEAR</button>
+        </div>
+
+        <div class="info">
+            [!] CLICK AND DRAG TO DRAW FASTER<br>RIGHT CLICK = ERASER
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
